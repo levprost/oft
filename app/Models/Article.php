@@ -16,14 +16,14 @@ class Article extends Model
         'content2_article',
         'section_article',
         'media_id',
-        'place_id',
     ];
+
+    public function places()
+    {
+        return $this->hasMany(Place::class);
+    }
     public function media()
     {
-        return $this->belongsTo(Media::class);
-    }
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Media::class);
     }
 }

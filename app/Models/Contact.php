@@ -5,17 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Media extends Model
+class Contact extends Model
 {
     use HasFactory;
-    
-    protected $fillable = [
-        'media',
-        'article_id',
-    ];
 
-    public function article()
-    {
-        return $this->belongsTo(Article::class);
-    }
+    protected $fillable = [
+        'subject_contact',
+        'message_contact',
+        'email_contact',
+    ];
 }

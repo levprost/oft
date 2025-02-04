@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('media', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('photo_media');
-            $table->string('video_media');
+            $table->string('media');
 
             $table->foreignId('article_id')->constrained('articles');
         });
