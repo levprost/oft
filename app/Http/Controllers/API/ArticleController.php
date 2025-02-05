@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Media;
 use App\Models\Article;
+use App\Enums\ArticleEnum;
 use Illuminate\Http\Request;
 use PhpParser\Builder\Enum_;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rules\Enum;
-use App\Enums\ArticleEnum;
 
 class ArticleController extends Controller
 {
@@ -43,7 +44,14 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        return response()->json($article);
+        if($media = Media::where('article_id', $article->id)->get('media')){
+            return response()->json([
+                'article' => $article, 
+                'media' => $media
+            ]);
+        }else{
+            return response()->json($article);
+        }
     }
 
     /**

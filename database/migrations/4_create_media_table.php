@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('media');
+            $table->string('type_media');
 
             $table->foreignId('article_id')->constrained('articles');
         });

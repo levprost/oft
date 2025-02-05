@@ -19,7 +19,7 @@ class PlaceFactory extends Factory
     {
         return [
             'name_place' => $this->faker->sentence(),
-            'address_place' => $this->faker->paragraph(),
+            'address_place' => $this->faker->address(),
             'latitude_place' => $this->faker->latitude(),
             'longitude_place' => $this->faker->longitude(),
             'article_id' => $this->faker->numberBetween(1, count(Article::all()))

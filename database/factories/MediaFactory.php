@@ -19,6 +19,7 @@ class MediaFactory extends Factory
     {
         return [
             'media' => 'default_picture'.'.jpeg',
+            'type_media' => rand(0, 1) ? 'image' : 'video',
             'article_id' => $this->faker->numberBetween(1, count(Article::all())),
         ];
     }
