@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\PlaceController;
 use App\Http\Controllers\API\ArticleController;
@@ -37,3 +39,12 @@ Route::post('/places', [PlaceController::class, 'store'])->name('places.store');
 Route::get('/places/{place}', [PlaceController::class, 'show'])->name('places.show');
 Route::put('/places/{place}', [PlaceController::class, 'update'])->name('places.update');
 Route::delete('/places/{place}', [PlaceController::class, 'destroy'])->name('places.destroy');
+
+
+//===========USER===========
+
+Route::post('/login', [AuthController::class, 'login']); 
+Route::middleware('auth:api')->group(function() { 
+    Route::get('/currentuser', [UserController::class, 'currentUser']); 
+    Route::post('/logout', [AuthController::class, 'logout']); 
+    });

@@ -58,7 +58,7 @@ class PlaceController extends Controller
     
         $place->update($formFields);
     
-        return response()->json(['message' => 'Lieu modifié avec succès'], 200);
+        return response()->json(['message' => 'Lieu modifié avec succès']);
     }
 
     /**
