@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Media;
+use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -14,8 +15,14 @@ class MediaController extends Controller
      */
     public function index()
     {
-        $media = Media::all();
+        $media = Media::with('article')->get();
         return response()->json($media);
+    }
+
+    public function lastMedia()
+    {
+        $lastMedia = Media::latest()->first();
+        return response()->json($lastMedia);
     }
 
     /**
@@ -23,11 +30,13 @@ class MediaController extends Controller
      */
     public function store(Request $request)
     {
+        $latestArticle = Article::latest()->first();
         $media = new Media();
+        $media->article_id = $latestArticle->id;
         $formFields = $request->validate([
             'media' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
             'type_media' => 'required|string',
-            'article_id' => 'required|integer',
+            'article_id' => 'required|integer|exists:articles,id',
         ]);
         $filename = "";
         if ($request->hasFile('media')) {
@@ -44,6 +53,7 @@ class MediaController extends Controller
             $filename = Null;
         }
         $formFields['media'] = $filename;
+        
         $media->fill($formFields);
         $media->save();
         return response()->json($media);
