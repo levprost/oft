@@ -29,35 +29,48 @@ class MediaController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $latestArticle = Article::latest()->first();
-        $media = new Media();
-        $media->article_id = $latestArticle->id;
-        $formFields = $request->validate([
-            'media' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'type_media' => 'required|string',
-            'article_id' => 'required|integer|exists:articles,id',
-        ]);
-        $filename = "";
-        if ($request->hasFile('media')) {
-            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg" 
-            $filenameWithExt = $request->file('media')->getClientOriginalName();
+{
+    // Валидация входящих данных
+    $formFields = $request->validate([
+        'media.*' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'type_media.*' => 'required|string',
+        'article_id' => 'required|integer|exists:articles,id',
+    ]);
+
+    // Массив для хранения сохранённых медиа
+    $savedMedia = [];
+
+    // Проверяем, были ли загружены файлы
+    if ($request->hasFile('media')) {
+        // Проходим по каждому загруженному файлу
+        foreach ($request->file('media') as $index => $file) {
+            // Получаем имя файла и его расширение
+            $filenameWithExt = $file->getClientOriginalName();
             $filenameWithExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            // On récupère l'extension du fichier, résultat $extension : ".jpg" 
-            $extension = $request->file('media')->getClientOriginalExtension();
-            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $filename :"jeanmiche_20220422.jpg" 
+            $extension = $file->getClientOriginalExtension();
             $filename = $filenameWithExt . '_' . time() . '.' . $extension;
-            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app 
-            $request->file('media')->storeAs('uploads', $filename);
-        } else {
-            $filename = Null;
+
+            // Сохраняем файл в папку uploads
+            $file->storeAs('uploads', $filename);
+
+            // Создаём новый объект Media
+            $media = new Media();
+            // Используем данные из валидированного массива
+            $media->article_id = $formFields['article_id']; // Берём ID статьи из валидированных данных
+            $media->media = $filename;
+            $media->type_media = $formFields['type_media'][$index]; // Берём тип медиа из массива type_media
+            // Сохраняем запись в базу данных
+            $media->save();
+
+            // Добавляем в массив сохранённые медиа
+            $savedMedia[] = $media;
         }
-        $formFields['media'] = $filename;
-        
-        $media->fill($formFields);
-        $media->save();
-        return response()->json($media);
     }
+
+    // Возвращаем сохранённые медиа (можно также вернуть ответ в виде success)
+    return response()->json($savedMedia);
+    }
+
 
     /**
      * Display the specified resource.
