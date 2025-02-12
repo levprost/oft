@@ -19,6 +19,7 @@ Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->nam
 
 //===========MEDIA===========
 Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+Route::get('/media/{article}/media', [MediaController::class, 'indexByArticle'])->name('media.indexByArticle');
 Route::post('/media', [MediaController::class, 'store'])->name('media.store');
 Route::get('/media/{media}', [MediaController::class, 'show'])->name('media.show');
 Route::put('/media/{media}', [MediaController::class, 'update'])->name('media.update');

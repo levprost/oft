@@ -68,11 +68,11 @@ class ArticleController extends Controller
     public function update(Request $request, Article $article)
     {
         $formFields = $request->validate([
-            'title_article' => 'required|string',
-            'content_article' => 'required|string',
-            'type_article' => ['required', new Enum(ArticleEnum::class)],
-            'content2_article' => 'required|string',
-            'section_article' => 'required|string',
+            'title_article' => 'sometimes|string',
+            'content_article' => 'sometimes|string',
+            'type_article' => ['sometimes', new Enum(ArticleEnum::class)],
+            'content2_article' => 'sometimes|string',
+            'section_article' => 'sometimes|string',
         ]);
         $article->fill($formFields);
         $article->save();

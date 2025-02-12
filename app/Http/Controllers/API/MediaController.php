@@ -18,6 +18,13 @@ class MediaController extends Controller
         $media = Media::with('article')->get();
         return response()->json($media);
     }
+    public function indexByArticle(Article $article)
+    {
+    $media = Media::where('article_id', $article->id)->get();
+    return response()->json($media);
+    }
+
+
 
     public function lastMedia()
     {
@@ -36,38 +43,27 @@ class MediaController extends Controller
         'type_media.*' => 'required|string',
         'article_id' => 'required|integer|exists:articles,id',
     ]);
-
-    // Массив для хранения сохранённых медиа
     $savedMedia = [];
-
-    // Проверяем, были ли загружены файлы
     if ($request->hasFile('media')) {
-        // Проходим по каждому загруженному файлу
+        // la bocle foreach pour iploads plusieurs fichiers
         foreach ($request->file('media') as $index => $file) {
-            // Получаем имя файла и его расширение
+            // Récuper les données
             $filenameWithExt = $file->getClientOriginalName();
             $filenameWithExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $file->getClientOriginalExtension();
             $filename = $filenameWithExt . '_' . time() . '.' . $extension;
-
-            // Сохраняем файл в папку uploads
             $file->storeAs('uploads', $filename);
 
-            // Создаём новый объект Media
             $media = new Media();
-            // Используем данные из валидированного массива
-            $media->article_id = $formFields['article_id']; // Берём ID статьи из валидированных данных
+            $media->article_id = $formFields['article_id'];
             $media->media = $filename;
-            $media->type_media = $formFields['type_media'][$index]; // Берём тип медиа из массива type_media
-            // Сохраняем запись в базу данных
+            $media->type_media = $formFields['type_media'][$index]; //Prendre type media de massive index
             $media->save();
 
-            // Добавляем в массив сохранённые медиа
             $savedMedia[] = $media;
         }
     }
 
-    // Возвращаем сохранённые медиа (можно также вернуть ответ в виде success)
     return response()->json($savedMedia);
     }
 
