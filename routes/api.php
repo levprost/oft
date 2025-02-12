@@ -11,6 +11,7 @@ use App\Http\Controllers\API\ContactController;
 
 //===========ARTICLE===========
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/home', [ArticleController::class, 'home'])->name('articles.home');
 Route::get('/articles/last', [ArticleController::class, 'last']);
 Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
 Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');

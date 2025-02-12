@@ -22,7 +22,11 @@ class ArticleController extends Controller
         return response()->json($articles);
     }
 
-
+    public function home()
+    {
+        $articles = Article::latest()->take(10)->with('media')->get();
+        return response()->json($articles);
+    }
     public function last()
     {
         $lastArticle = Article::latest()->first();
