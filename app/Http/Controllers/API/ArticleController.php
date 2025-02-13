@@ -24,8 +24,18 @@ class ArticleController extends Controller
 
     public function home()
     {
-        $articles = Article::latest()->take(10)->with('media')->get();
-        return response()->json($articles);
+        $articles = Article::latest()->take(9)->get();
+
+        // Добавляем медиафайлы к каждой статье
+        $articlesWithMedia = $articles->map(function ($article) {
+            $media = Media::where('article_id', $article->id)->get('media');
+            return [
+                'article' => $article,
+                'media' => $media
+            ];
+        });
+
+        return response()->json($articlesWithMedia);
     }
     public function last()
     {
